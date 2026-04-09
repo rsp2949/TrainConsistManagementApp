@@ -3,63 +3,68 @@ import static org.junit.Assert.*;
 
 public class TrainConsistAppTest {
 
-    static class InvalidCapacityException extends Exception {
-        public InvalidCapacityException(String message) {
+    static class CargoSafetyException extends RuntimeException {
+        public CargoSafetyException(String message) {
             super(message);
         }
     }
 
-    static class PassengerBogie {
-        String name;
-        int capacity;
+    static class GoodsBogie {
+        String shape;
+        String cargo;
 
-        PassengerBogie(String name, int capacity) throws InvalidCapacityException {
-            if (capacity <= 0) {
-                throw new InvalidCapacityException("Capacity must be greater than zero");
+        GoodsBogie(String shape) {
+            this.shape = shape;
+        }
+
+        void assignCargo(String cargo) {
+            try {
+                if (shape.equalsIgnoreCase("Rectangular") && cargo.equalsIgnoreCase("Petroleum")) {
+                    throw new CargoSafetyException("Unsafe cargo assignment!");
+                }
+                this.cargo = cargo;
+            } catch (CargoSafetyException e) {
+            } finally {
             }
-            this.name = name;
-            this.capacity = capacity;
         }
     }
 
     @Test
-    public void testException_ValidCapacityCreation() throws Exception {
-        PassengerBogie b = new PassengerBogie("Sleeper", 72);
-        assertEquals(72, b.capacity);
-    }
-
-    @Test(expected = InvalidCapacityException.class)
-    public void testException_NegativeCapacityThrowsException() throws Exception {
-        new PassengerBogie("Sleeper", -10);
-    }
-
-    @Test(expected = InvalidCapacityException.class)
-    public void testException_ZeroCapacityThrowsException() throws Exception {
-        new PassengerBogie("Sleeper", 0);
+    public void testCargo_SafeAssignment() {
+        GoodsBogie g = new GoodsBogie("Cylindrical");
+        g.assignCargo("Petroleum");
+        assertEquals("Petroleum", g.cargo);
     }
 
     @Test
-    public void testException_ExceptionMessageValidation() {
-        try {
-            new PassengerBogie("Sleeper", 0);
-        } catch (InvalidCapacityException e) {
-            assertEquals("Capacity must be greater than zero", e.getMessage());
-        }
+    public void testCargo_UnsafeAssignmentHandled() {
+        GoodsBogie g = new GoodsBogie("Rectangular");
+        g.assignCargo("Petroleum");
+        assertNull(g.cargo);
     }
 
     @Test
-    public void testException_ObjectIntegrityAfterCreation() throws Exception {
-        PassengerBogie b = new PassengerBogie("AC Chair", 56);
-        assertEquals("AC Chair", b.name);
-        assertEquals(56, b.capacity);
+    public void testCargo_CargoNotAssignedAfterFailure() {
+        GoodsBogie g = new GoodsBogie("Rectangular");
+        g.assignCargo("Petroleum");
+        assertNull(g.cargo);
     }
 
     @Test
-    public void testException_MultipleValidBogiesCreation() throws Exception {
-        PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-        PassengerBogie b2 = new PassengerBogie("First Class", 24);
+    public void testCargo_ProgramContinuesAfterException() {
+        GoodsBogie g1 = new GoodsBogie("Rectangular");
+        g1.assignCargo("Petroleum");
 
-        assertNotNull(b1);
-        assertNotNull(b2);
+        GoodsBogie g2 = new GoodsBogie("Cylindrical");
+        g2.assignCargo("Coal");
+
+        assertEquals("Coal", g2.cargo);
+    }
+
+    @Test
+    public void testCargo_FinallyBlockExecution() {
+        GoodsBogie g = new GoodsBogie("Rectangular");
+        g.assignCargo("Petroleum");
+        assertTrue(true);
     }
 }
