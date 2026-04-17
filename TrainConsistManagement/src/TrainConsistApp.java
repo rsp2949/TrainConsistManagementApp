@@ -1,9 +1,23 @@
+import java.util.Arrays;
+
 public class TrainConsistApp {
 
-    public static boolean linearSearch(String[] bogieIds, String searchId) {
-        for (String id : bogieIds) {
-            if (id.equals(searchId)) {
+    public static boolean binarySearch(String[] bogieIds, String key) {
+        Arrays.sort(bogieIds);
+
+        int low = 0;
+        int high = bogieIds.length - 1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int result = key.compareTo(bogieIds[mid]);
+
+            if (result == 0) {
                 return true;
+            } else if (result > 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
             }
         }
         return false;
@@ -12,25 +26,27 @@ public class TrainConsistApp {
     public static void main(String[] args) {
 
         System.out.println("========================================");
-        System.out.println(" UC18 - Linear Search for Bogie ID ");
+        System.out.println(" UC19 - Binary Search for Bogie ID ");
         System.out.println("========================================\n");
 
         String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String searchId = "BG309";
+        String key = "BG309";
 
-        System.out.println("Available Bogie IDs:\n");
+        Arrays.sort(bogieIds);
+
+        System.out.println("Sorted Bogie IDs:\n");
         for (String id : bogieIds) {
             System.out.println(id);
         }
 
-        boolean found = linearSearch(bogieIds, searchId);
+        boolean found = binarySearch(bogieIds, key);
 
         if (found) {
-            System.out.println("\nBogie " + searchId + " found in train consist.");
+            System.out.println("\nBogie " + key + " found using Binary Search.");
         } else {
-            System.out.println("\nBogie " + searchId + " not found.");
+            System.out.println("\nBogie " + key + " not found.");
         }
 
-        System.out.println("\nUC18 search completed...");
+        System.out.println("\nUC19 search completed...");
     }
 }
