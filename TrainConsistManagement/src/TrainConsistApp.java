@@ -1,23 +1,36 @@
-import java.util.Arrays;
-
 public class TrainConsistApp {
+
+    public static boolean linearSearch(String[] bogieIds, String searchId) {
+        for (String id : bogieIds) {
+            if (id.equals(searchId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
 
         System.out.println("========================================");
-        System.out.println(" UC17 - Sort Bogie Names Using Arrays.sort()");
+        System.out.println(" UC18 - Linear Search for Bogie ID ");
         System.out.println("========================================\n");
 
-        String[] bogies = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchId = "BG309";
 
-        System.out.println("Original Bogie Names:");
-        System.out.println(Arrays.toString(bogies));
+        System.out.println("Available Bogie IDs:\n");
+        for (String id : bogieIds) {
+            System.out.println(id);
+        }
 
-        Arrays.sort(bogies);
+        boolean found = linearSearch(bogieIds, searchId);
 
-        System.out.println("\nSorted Bogie Names (Alphabetical):");
-        System.out.println(Arrays.toString(bogies));
+        if (found) {
+            System.out.println("\nBogie " + searchId + " found in train consist.");
+        } else {
+            System.out.println("\nBogie " + searchId + " not found.");
+        }
 
-        System.out.println("\nUC17 sorting completed...");
+        System.out.println("\nUC18 search completed...");
     }
 }
